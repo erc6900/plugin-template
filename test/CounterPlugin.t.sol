@@ -36,7 +36,7 @@ contract CounterTest is Test {
         // in this case our plugin only accepts calls to increment via user operations so this is essential
         entryPoint = IEntryPoint(address(new EntryPoint()));
 
-        // our modular smart contract account will be installed with the multi owner plugin
+        // our modular smart contract account will be installed with the single owner plugin
         // so we have a way to determine who is authorized to do things on this account
         // we'll use this plugin's validation for our increment function
         SingleOwnerPlugin singleOwnerPlugin = new SingleOwnerPlugin();
@@ -56,7 +56,7 @@ contract CounterTest is Test {
         counterPlugin = new CounterPlugin();
         bytes32 manifestHash = keccak256(abi.encode(counterPlugin.pluginManifest()));
 
-        // we will have a single function dependency for our counter contract: the multi owner user op validation
+        // we will have a single function dependency for our counter contract: the single owner user op validation
         // we'll use this to ensure that only an owner can sign a user operation that can successfully increment
         FunctionReference[] memory dependencies = new FunctionReference[](1);
         dependencies[0] = FunctionReferenceLib.pack(
@@ -89,7 +89,7 @@ contract CounterTest is Test {
             signature: ""
         });
 
-        // sign this user operation with the owner, otherwise it will revert due to the multiowner validation
+        // sign this user operation with the owner, otherwise it will revert due to the singleowner validation
         bytes32 userOpHash = entryPoint.getUserOpHash(userOp);
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(owner1Key, userOpHash.toEthSignedMessageHash());
         userOp.signature = abi.encodePacked(r, s, v);

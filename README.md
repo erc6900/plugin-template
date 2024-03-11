@@ -1,4 +1,4 @@
-## Modular Account Plugin
+## ERC6900 Account Plugin
 
 This is a very basic example of an ERC6900 compatible plugin called CounterPlugin, built in Foundry. It has one function that can be called through a user operation, called `increment`. In `/src` you will find this plugin, documented so you can understand how it works in detail.
 

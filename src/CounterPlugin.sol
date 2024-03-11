@@ -21,10 +21,10 @@ contract CounterPlugin is BasePlugin {
     string public constant VERSION = "1.0.0";
     string public constant AUTHOR = "Alchemy";
 
-    // this is a constant used in the manifest, to reference our only dependency: the multi owner plugin
-    // since it is the first, and only, plugin the index 0 will reference the multi owner plugin
-    // we can use this to tell the modular account that we should use the multi owner plugin to validate our user op
-    // in other words, we'll say "make sure the person calling increment is an owner of the account using our multiowner plugin"
+    // this is a constant used in the manifest, to reference our only dependency: the single owner plugin
+    // since it is the first, and only, plugin the index 0 will reference the single owner plugin
+    // we can use this to tell the modular account that we should use the single owner plugin to validate our user op
+    // in other words, we'll say "make sure the person calling increment is an owner of the account using our single plugin"
     uint256 internal constant _MANIFEST_DEPENDENCY_INDEX_OWNER_USER_OP_VALIDATION = 0;
 
     /*
@@ -78,7 +78,7 @@ contract CounterPlugin is BasePlugin {
 
         // you can think of ManifestFunction as a reference to a function somewhere,
         // we want to say "use this function" for some purpose - in this case,
-        // we'll be using the user op validation function from the multi owner dependency
+        // we'll be using the user op validation function from the single owner dependency
         // and this is specified by the depdendency index
         ManifestFunction memory ownerUserOpValidationFunction = ManifestFunction({
             functionType: ManifestAssociatedFunctionType.DEPENDENCY,
@@ -86,7 +86,7 @@ contract CounterPlugin is BasePlugin {
             dependencyIndex: _MANIFEST_DEPENDENCY_INDEX_OWNER_USER_OP_VALIDATION
         });
 
-        // here we will link together the increment function with the multi owner user op validation
+        // here we will link together the increment function with the single owner user op validation
         // this basically says "use this user op validation function and make sure everythings okay before calling increment"
         // this will ensure that only an owner of the account can call increment
         manifest.userOpValidationFunctions = new ManifestAssociatedFunction[](1);
