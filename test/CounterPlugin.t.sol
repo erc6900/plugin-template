@@ -2,16 +2,18 @@
 pragma solidity ^0.8.13;
 
 import {Test} from "forge-std/Test.sol";
-import {EntryPoint} from "@eth-infinitism/account-abstraction/core/EntryPoint.sol";
 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import {UpgradeableModularAccount} from "@alchemy/modular-account/src/account/UpgradeableModularAccount.sol";
-import {IEntryPoint} from "@alchemy/modular-account/src/interfaces/erc4337/IEntryPoint.sol";
-import {UserOperation} from "@alchemy/modular-account/src/interfaces/erc4337/UserOperation.sol";
-import {MultiOwnerModularAccountFactory} from "@alchemy/modular-account/src/factory/MultiOwnerModularAccountFactory.sol";
-import {MultiOwnerPlugin} from "@alchemy/modular-account/src/plugins/owner/MultiOwnerPlugin.sol";
-import {IMultiOwnerPlugin} from "@alchemy/modular-account/src/plugins/owner/IMultiOwnerPlugin.sol";
-import {FunctionReference} from "@alchemy/modular-account/src/interfaces/IPluginManager.sol";
-import {FunctionReferenceLib} from "@alchemy/modular-account/src/helpers/FunctionReferenceLib.sol";
+
+import {UpgradeableModularAccount} from "lib/reference-implementation/src/account/UpgradeableModularAccount.sol";
+import {FunctionReference} from "lib/reference-implementation/src/interfaces/IPluginManager.sol";
+import {FunctionReferenceLib} from "lib/reference-implementation/src/helpers/FunctionReferenceLib.sol";
+import {SingleOwnerPlugin} from "lib/reference-implementation/src/plugins/owner/SingleOwnerPlugin.sol";
+import {ISingleOwnerPlugin} from "lib/reference-implementation/src/plugins/owner/ISingleOwnerPlugin.sol";
+import {MSCAFactoryFixture} from "lib/reference-implementation/test/mocks/MSCAFactoryFixture.sol";
+
+import {IEntryPoint} from "@eth-infinitism/account-abstraction/interfaces/IEntryPoint.sol";
+import {EntryPoint} from "@eth-infinitism/account-abstraction/core/EntryPoint.sol";
+import {UserOperation} from "@eth-infinitism/account-abstraction/interfaces/UserOperation.sol";
 
 import {CounterPlugin} from "../src/CounterPlugin.sol";
 
@@ -37,14 +39,8 @@ contract CounterTest is Test {
         // our modular smart contract account will be installed with the multi owner plugin
         // so we have a way to determine who is authorized to do things on this account
         // we'll use this plugin's validation for our increment function
-        MultiOwnerPlugin multiOwnerPlugin = new MultiOwnerPlugin();
-        MultiOwnerModularAccountFactory factory = new MultiOwnerModularAccountFactory(
-            address(this),
-            address(multiOwnerPlugin),
-            address(new UpgradeableModularAccount(entryPoint)),
-            keccak256(abi.encode(multiOwnerPlugin.pluginManifest())),
-            entryPoint
-        );
+        SingleOwnerPlugin singleOwnerPlugin = new SingleOwnerPlugin();
+        MSCAFactoryFixture factory = new MSCAFactoryFixture(entryPoint, singleOwnerPlugin);
 
         // the beneficiary of the fees at the entry point
         beneficiary = payable(makeAddr("beneficiary"));
@@ -52,9 +48,7 @@ contract CounterTest is Test {
         // create a single owner for this account and provide the address to our modular account
         // we'll also add ether to our account to pay for gas fees
         (owner1, owner1Key) = makeAddrAndKey("owner1");
-        owners = new address[](1);
-        owners[0] = owner1;
-        account1 = UpgradeableModularAccount(payable(factory.createAccount(0, owners)));
+        account1 = UpgradeableModularAccount(payable(factory.createAccount(owner1, 0)));
         vm.deal(address(account1), 100 ether);
 
         // create our counter plugin and grab the manifest hash so we can install it
@@ -66,7 +60,7 @@ contract CounterTest is Test {
         // we'll use this to ensure that only an owner can sign a user operation that can successfully increment
         FunctionReference[] memory dependencies = new FunctionReference[](1);
         dependencies[0] = FunctionReferenceLib.pack(
-            address(multiOwnerPlugin), uint8(IMultiOwnerPlugin.FunctionId.USER_OP_VALIDATION_OWNER)
+            address(singleOwnerPlugin), uint8(ISingleOwnerPlugin.FunctionId.USER_OP_VALIDATION_OWNER)
         );
 
         // install this plugin on the account as the owner

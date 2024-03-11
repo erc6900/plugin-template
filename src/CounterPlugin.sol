@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.19;
 
-import {BasePlugin} from "@alchemy/modular-account/src/plugins/BasePlugin.sol";
-import {IPluginExecutor} from "@alchemy/modular-account/src/interfaces/IPluginExecutor.sol";
+import {BasePlugin} from "erc6900/reference-implementation/plugins/BasePlugin.sol";
+import {IPluginExecutor} from "erc6900/reference-implementation/interfaces/IPluginExecutor.sol";
 import {
     ManifestFunction,
     ManifestAssociatedFunctionType,
     ManifestAssociatedFunction,
     PluginManifest,
-    PluginMetadata
-} from "@alchemy/modular-account/src/interfaces/IPlugin.sol";
-import {IMultiOwnerPlugin} from "@alchemy/modular-account/src/plugins/owner/IMultiOwnerPlugin.sol";
+    PluginMetadata,
+    IPlugin
+} from "erc6900/reference-implementation/interfaces/IPlugin.sol";
 
 /// @title Counter Plugin
 /// @author Alchemy
@@ -66,10 +66,10 @@ contract CounterPlugin is BasePlugin {
         PluginManifest memory manifest;
 
         // since we are using the modular account, we will specify one depedency
-        // which will be the multiowner plugin
+        // which will handle the user op validation for ownership
         // you can find this depedency specified in the installPlugin call in the tests
         manifest.dependencyInterfaceIds = new bytes4[](1);
-        manifest.dependencyInterfaceIds[0] = type(IMultiOwnerPlugin).interfaceId;
+        manifest.dependencyInterfaceIds[0] = type(IPlugin).interfaceId;
 
         // we only have one execution function that can be called, which is the increment function
         // here we define that increment function on the manifest as something that can be called during execution
