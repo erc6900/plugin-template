@@ -51,7 +51,7 @@ contract SubscriptionPlugin is BasePlugin {
         require(block.timestamp - subscription.lastPaid >= 4 weeks, "less than 4 weeks");
         require(subscription.enabled);
         subscription.lastPaid = block.timestamp;
-        IPluginExecutor(subscriber).executeFromPluginExternal(msg.sender, amount, "0x");
+        IPluginExecutor(subscriber).executeFromPluginExternal(msg.sender, amount, "");
     }
 
     // ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
