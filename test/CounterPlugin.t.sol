@@ -25,7 +25,6 @@ contract CounterTest is Test {
     CounterPlugin counterPlugin;
     address owner1;
     uint256 owner1Key;
-    address[] public owners;
     address payable beneficiary;
 
     uint256 constant CALL_GAS_LIMIT = 70000;

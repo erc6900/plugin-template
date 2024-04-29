@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.19;
 
-import {BasePlugin} from "erc6900/reference-implementation/plugins/BasePlugin.sol";
-import {IPluginExecutor} from "erc6900/reference-implementation/interfaces/IPluginExecutor.sol";
+import {BasePlugin} from "modular-account-libs/plugins/BasePlugin.sol";
+import {IPluginExecutor} from "modular-account-libs/interfaces/IPluginExecutor.sol";
 import {
     ManifestFunction,
     ManifestAssociatedFunctionType,
@@ -10,16 +10,16 @@ import {
     PluginManifest,
     PluginMetadata,
     IPlugin
-} from "erc6900/reference-implementation/interfaces/IPlugin.sol";
+} from "modular-account-libs/interfaces/IPlugin.sol";
 
 /// @title Counter Plugin
-/// @author Alchemy
+/// @author Your name
 /// @notice This plugin lets increment a count!
 contract CounterPlugin is BasePlugin {
     // metadata used by the pluginMetadata() method down below
     string public constant NAME = "Counter Plugin";
     string public constant VERSION = "1.0.0";
-    string public constant AUTHOR = "Alchemy";
+    string public constant AUTHOR = "Your name";
 
     // this is a constant used in the manifest, to reference our only dependency: the single owner plugin
     // since it is the first, and only, plugin the index 0 will reference the single owner plugin
