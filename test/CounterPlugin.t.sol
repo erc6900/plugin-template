@@ -4,12 +4,12 @@ pragma solidity ^0.8.13;
 import {Test} from "forge-std/Test.sol";
 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
-import {UpgradeableModularAccount} from "lib/reference-implementation/src/account/UpgradeableModularAccount.sol";
-import {FunctionReference} from "lib/reference-implementation/src/interfaces/IPluginManager.sol";
-import {FunctionReferenceLib} from "lib/reference-implementation/src/helpers/FunctionReferenceLib.sol";
-import {SingleOwnerPlugin} from "lib/reference-implementation/src/plugins/owner/SingleOwnerPlugin.sol";
-import {ISingleOwnerPlugin} from "lib/reference-implementation/src/plugins/owner/ISingleOwnerPlugin.sol";
-import {MSCAFactoryFixture} from "lib/reference-implementation/test/mocks/MSCAFactoryFixture.sol";
+import {UpgradeableModularAccount} from "erc6900/reference-implementation/src/account/UpgradeableModularAccount.sol";
+import {FunctionReference} from "erc6900/reference-implementation/src/interfaces/IPluginManager.sol";
+import {FunctionReferenceLib} from "erc6900/reference-implementation/src/helpers/FunctionReferenceLib.sol";
+import {SingleOwnerPlugin} from "erc6900/reference-implementation/src/plugins/owner/SingleOwnerPlugin.sol";
+import {ISingleOwnerPlugin} from "erc6900/reference-implementation/src/plugins/owner/ISingleOwnerPlugin.sol";
+import {MSCAFactoryFixture} from "erc6900/reference-implementation/test/mocks/MSCAFactoryFixture.sol";
 
 import {IEntryPoint} from "@eth-infinitism/account-abstraction/interfaces/IEntryPoint.sol";
 import {EntryPoint} from "@eth-infinitism/account-abstraction/core/EntryPoint.sol";
